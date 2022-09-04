@@ -17,9 +17,10 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
     private val _viewStates = MutableLiveData(LoginViewState())
-    val viewStates = _viewStates.asLiveData()
+    val viewStatesLiveData = _viewStates.asLiveData()
+
     private val _viewEvents: LiveEvents<LoginViewEvent> = LiveEvents()
-    val viewEvents = _viewEvents.asLiveData()
+    val viewEventsLiveData = _viewEvents.asLiveData()
 
     fun dispatch(viewAction: LoginViewAction) {
         when (viewAction) {
@@ -45,6 +46,7 @@ class LoginViewModel : ViewModel() {
             }.onStart {
                 _viewEvents.setEvent(LoginViewEvent.ShowLoadingDialog)
             }.onEach {
+                //在调用 emit(value) 发送 value 数据前会调用 onEach() 方法
                 _viewEvents.setEvent(
                     LoginViewEvent.DismissLoadingDialog, LoginViewEvent.ShowToast(it)
                 )
@@ -58,7 +60,7 @@ class LoginViewModel : ViewModel() {
     }
 
     private suspend fun loginLogic() {
-        withState(viewStates) {
+        withState(viewStatesLiveData) {
             val userName = it.userName
             val password = it.password
             delay(2000)

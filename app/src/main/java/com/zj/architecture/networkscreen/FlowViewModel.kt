@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 class FlowViewModel : ViewModel() {
     private val _viewStates = MutableLiveData(NetworkViewState())
     val viewStates = _viewStates.asLiveData()
+
     private val _viewEvents: com.zj.mvi.core.SingleLiveEvents<NetworkViewEvent> =
         com.zj.mvi.core.SingleLiveEvents()
     val viewEvents = _viewEvents.asLiveData()
@@ -83,7 +84,7 @@ class FlowViewModel : ViewModel() {
                 "$a,$b"
             }.onStart {
                 _viewEvents.setEvent(NetworkViewEvent.ShowLoadingDialog)
-            }.onEach {
+            }.onEach {//这里的 it 值就是 a,b 的格式
                 _viewEvents.setEvent(
                     NetworkViewEvent.DismissLoadingDialog, NetworkViewEvent.ShowToast(it)
                 )

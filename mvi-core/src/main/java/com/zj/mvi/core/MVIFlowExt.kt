@@ -20,7 +20,11 @@ fun <T, A> StateFlow<T>.observeState(
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             this@observeState.map {
                 StateTuple1(prop1.get(it))
-            }.distinctUntilChanged().collect { (a) ->
+            }.distinctUntilChanged()
+            //Flow 的 collect() 方法 本质是调用 Flow 的 collect(FlowCollector 对象) 方法
+            //然后传入一个 FlowCollector 对象收集数据, 收集数据时会触发 FlowCollector 的 emit() 方法
+            //最终调用传入的 action 回调
+             .collect { (a) ->
                 action.invoke(a)
             }
         }
@@ -78,6 +82,7 @@ suspend fun <T> SharedFlowEvents<T>.setEvent(vararg values: T) {
 fun <T> SharedFlow<List<T>>.observeEvent(lifecycleOwner: LifecycleOwner, action: (T) -> Unit) {
     lifecycleOwner.lifecycleScope.launchWhenStarted {
         this@observeEvent.collect {
+            //因为有多个 UI 事件, 所以是一个 List
             it.forEach { event ->
                 action.invoke(event)
             }

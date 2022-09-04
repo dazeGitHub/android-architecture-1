@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initViewStates() {
-        viewModel.viewStates.let { states ->
+        viewModel.viewStatesLiveData.let { states ->
             states.observeState(this, LoginViewState::userName) {
                 edit_user_name.setText(it)
                 edit_user_name.setSelection(it.length)
@@ -58,7 +58,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initViewEvents() {
-        viewModel.viewEvents.observeEvent(this) {
+        viewModel.viewEventsLiveData.observeEvent(this) {
             when (it) {
                 is LoginViewEvent.ShowToast -> toast(it.message)
                 is LoginViewEvent.ShowLoadingDialog -> showLoadingDialog()

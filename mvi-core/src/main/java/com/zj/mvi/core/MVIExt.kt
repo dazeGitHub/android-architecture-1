@@ -7,14 +7,19 @@ import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.map
 import kotlin.reflect.KProperty1
 
+//观察 LiveData<T> 中的 prop1 属性值变化, 如果变化了那么调用 action 回调函数
 fun <T, A> LiveData<T>.observeState(
     lifecycleOwner: LifecycleOwner,
     prop1: KProperty1<T, A>,
     action: (A) -> Unit
 ) {
+    //使用 LiveData 的扩展函数 .map{} 将一个类型的 LiveData 转换为 另一个类型的 LiveData
     this.map {
+        //获取 LiveData 的 value 值的 prop1 属性的值, 然后创建 StateTuple1() 对象
         StateTuple1(prop1.get(it))
+        //distinctUntilChanged() 防抖
     }.distinctUntilChanged().observe(lifecycleOwner) { (a) ->
+        //当 prop1 属性发生改变时调用 action 回调方法
         action.invoke(a)
     }
 }
@@ -51,7 +56,7 @@ internal data class StateTuple2<A, B>(val a: A, val b: B)
 internal data class StateTuple3<A, B, C>(val a: A, val b: B, val c: C)
 
 fun <T> MutableLiveData<T>.setState(reducer: T.() -> T) {
-    this.value = this.value?.reducer()
+    this.value = this.value?.reducer() //reducer : 缩减者
 }
 
 fun <T> SingleLiveEvents<T>.setEvent(vararg values: T) {

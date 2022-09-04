@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     private val newsRvAdapter by lazy {
         NewsRvAdapter {
+            //当 Item 点击后发送 MainViewAction.NewsItemClicked
             viewModel.dispatch(MainViewAction.NewsItemClicked(it.tag as NewsItem))
         }
     }
@@ -30,18 +31,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun initView() {
         rvNewsHome.adapter = newsRvAdapter
-
         srlNewsHome.setOnRefreshListener {
             viewModel.dispatch(MainViewAction.OnSwipeRefresh)
         }
-
         fabStar.setOnClickListener {
             viewModel.dispatch(MainViewAction.FabClicked)
         }
     }
 
     private fun initViewModel() {
-        viewModel.viewStates.run {
+
+        viewModel.viewStatesLiveData.run {
+            //
             observeState(this@MainActivity, MainViewState::newsList) {
                 newsRvAdapter.submitList(it)
             }
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        viewModel.viewEvents.observeEvent(this) {
+        viewModel.viewEventsLiveData.observeEvent(this) {
             renderViewEvent(it)
         }
     }

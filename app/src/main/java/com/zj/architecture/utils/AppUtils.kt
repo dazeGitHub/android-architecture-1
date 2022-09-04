@@ -39,7 +39,7 @@ fun <T> MutableLiveData<T>.asLiveData(): LiveData<T> {
     return this
 }
 
-sealed class FetchStatus {
+sealed class FetchStatus { //Fetch : 拿来
     object Fetching : FetchStatus()
     object Fetched : FetchStatus()
     object NotFetched : FetchStatus()

@@ -13,6 +13,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+// 和 login/livedata 中的 LoginViewModel 不同, 当前的 LoginViewModel 使用的是
+// MutableStateFlow(LoginViewState()) 和 SharedFlowEvents<LoginViewEvent>()
 class LoginViewModel : ViewModel() {
     private val _viewStates = MutableStateFlow(LoginViewState())
     val viewStates = _viewStates.asStateFlow()
